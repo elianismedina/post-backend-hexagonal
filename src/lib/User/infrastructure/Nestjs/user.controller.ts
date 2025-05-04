@@ -14,7 +14,7 @@ import { UserGetOneById } from '../../application/UserGetOneById/UserGetOneById'
 import { UserCreate } from '../../application/UserCreate/UserCreate';
 import { UserEdit } from '../../application/UserEdit/UserEdit';
 import { UserDelete } from '../../application/UserDelete/UserDelete';
-import { Create, Edit, FindOneParams } from './Validations';
+import { Create as CreateDto, Edit, FindOneParams } from './Validations'; // Rename imported Create to CreateDto
 import { UserNotFoundError } from '../../domain/UserNotFoundError';
 
 @Controller('user')
@@ -46,13 +46,9 @@ export class UserController {
   }
 
   @Post()
-  async create(@Body() body: Create) {
-    return await this.userCreate.run(
-      body.id,
-      body.name,
-      body.email,
-      new Date(),
-    );
+  async create(@Body() body: CreateDto) {
+    // Use the renamed CreateDto here
+    return await this.userCreate.run(body.name, body.email, new Date());
   }
 
   @Put(':id')
