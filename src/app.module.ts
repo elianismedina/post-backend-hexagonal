@@ -11,7 +11,7 @@ import { TypeOrmUserEntity } from './lib/User/infrastructure/TypeOrm/TypeOrmUser
       type: 'postgres',
       url: process.env.DATABASE_URL,
       entities: [TypeOrmUserEntity],
-      synchronize: true,
+      synchronize: process.env.NODE_ENV === 'dev',
     }),
     UserModule,
   ],
