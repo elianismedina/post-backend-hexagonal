@@ -8,14 +8,14 @@ export class User {
   name: UserName;
   email: UserEmail;
   createdAt: UserCreatedAt;
-  password: string; // Make password required
+  password: string;
 
   constructor(
     id: UserId,
     name: UserName,
     email: UserEmail,
     createdAt: UserCreatedAt,
-    password: string, // Password is now required
+    password: string,
   ) {
     this.id = id;
     this.name = name;

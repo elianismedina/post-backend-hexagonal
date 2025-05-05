@@ -12,7 +12,7 @@ export class TypeOrmUserEntity {
   email: string;
 
   @Column()
-  password: string; // Add the password column
+  password: string;
 
   @CreateDateColumn()
   createdAt: Date;
