@@ -9,8 +9,9 @@ export class UserCreate {
   constructor(private repository: UserRepository) {}
 
   async run(name: string, email: string, createdAt: Date): Promise<void> {
+    const userId = await UserId.generate(this.repository); // Ensure unique ID
     const user = new User(
-      UserId.generate(), // Automatically generate the user ID
+      userId,
       new UserName(name),
       new UserEmail(email),
       new UserCreatedAt(createdAt),

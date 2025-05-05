@@ -1,3 +1,5 @@
+import { UserRepository } from './UserRepository';
+
 export class UserId {
   private readonly value: string;
 
@@ -10,9 +12,20 @@ export class UserId {
     this.value = value;
   }
 
-  public static generate(): UserId {
-    const randomPart = Math.floor(10000 + Math.random() * 90000); // Generate a 5-digit random number
-    return new UserId(`57${randomPart}`);
+  public static async generate(repository: UserRepository): Promise<UserId> {
+    let unique = false;
+    let newId: string = ''; // Initialize newId with an empty string
+
+    while (!unique) {
+      const randomPart = Math.floor(10000 + Math.random() * 90000); // Generate a 5-digit random number
+      newId = `57${randomPart}`;
+      const existingUser = await repository.getOneById(new UserId(newId));
+      if (!existingUser) {
+        unique = true;
+      }
+    }
+
+    return new UserId(newId);
   }
 
   public getValue(): string {

@@ -15,7 +15,7 @@ export class UserEdit {
     createdAt: Date,
   ): Promise<void> {
     const user = new User(
-      new UserId(id),
+      new UserId(id), // Validate the existing ID
       new UserName(name),
       new UserEmail(email),
       new UserCreatedAt(createdAt),

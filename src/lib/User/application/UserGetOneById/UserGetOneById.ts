@@ -9,7 +9,7 @@ export class UserGetOneById {
   async run(id: string): Promise<User> {
     const user = await this.repository.getOneById(new UserId(id));
 
-    if (!user) throw new UserNotFoundError('User not found'); // retorna 404
+    if (!user) throw new UserNotFoundError('User not found');
 
     return user;
   }

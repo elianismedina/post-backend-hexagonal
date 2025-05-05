@@ -10,7 +10,7 @@ export class User {
   createdAt: UserCreatedAt;
 
   constructor(
-    id: UserId,
+    id: UserId, // Ensure this is the first parameter
     name: UserName,
     email: UserEmail,
     createdAt: UserCreatedAt,

@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryColumn, CreateDateColumn } from 'typeorm';
 
 @Entity('users')
 export class TypeOrmUserEntity {
-  @PrimaryColumn()
+  @PrimaryColumn({ unique: true }) // Ensure the ID is unique
   id: string;
 
   @Column()
