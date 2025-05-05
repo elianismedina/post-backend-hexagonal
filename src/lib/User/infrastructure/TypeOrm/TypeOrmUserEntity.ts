@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryColumn, CreateDateColumn } from 'typeorm';
 
 @Entity('users')
 export class TypeOrmUserEntity {
-  @PrimaryColumn({ unique: true }) // Ensure the ID is unique
+  @PrimaryColumn()
   id: string;
 
   @Column()
@@ -10,6 +10,9 @@ export class TypeOrmUserEntity {
 
   @Column()
   email: string;
+
+  @Column()
+  password: string; // Add the password column
 
   @CreateDateColumn()
   createdAt: Date;

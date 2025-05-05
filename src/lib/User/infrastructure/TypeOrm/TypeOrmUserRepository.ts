@@ -25,6 +25,7 @@ export class TypeOrmUserRepository implements UserRepository {
           new UserName(u.name),
           new UserEmail(u.email),
           new UserCreatedAt(u.createdAt),
+          u.password, // Include the password
         ),
     );
   }
@@ -40,14 +41,31 @@ export class TypeOrmUserRepository implements UserRepository {
       new UserName(entity.name),
       new UserEmail(entity.email),
       new UserCreatedAt(entity.createdAt),
+      entity.password, // Include the password
     );
   }
 
-  async create(user: User): Promise<void> {
+  async findByEmail(email: UserEmail): Promise<User | null> {
+    const entity = await this.repository.findOne({
+      where: { email: email.getValue() },
+    });
+    if (!entity) return null;
+
+    return new User(
+      new UserId(entity.id),
+      new UserName(entity.name),
+      new UserEmail(entity.email),
+      new UserCreatedAt(entity.createdAt),
+      entity.password, // Include the password
+    );
+  }
+
+  async create(user: User, hashedPassword: string): Promise<void> {
     await this.repository.save({
       id: user.id.getValue(),
       name: user.name.getValue(),
       email: user.email.getValue(),
+      password: hashedPassword, // Save the hashed password
       createdAt: user.createdAt.getValue(),
     });
   }

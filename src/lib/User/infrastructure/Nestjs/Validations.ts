@@ -1,8 +1,11 @@
-import { IsEmail, IsString, Length } from 'class-validator';
+import { IsEmail, IsString, Matches } from 'class-validator';
 
 export class FindOneParams {
   @IsString()
-  @Length(5, 255)
+  @Matches(/^57\d{5}$/, {
+    message:
+      'Invalid UserId format. It must be a 7-digit code starting with 57.',
+  })
   id: string; // ID is still required for fetching, editing, or deleting a user
 }
 

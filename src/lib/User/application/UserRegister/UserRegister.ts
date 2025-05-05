@@ -6,14 +6,14 @@ import { UserName } from '../../domain/UserName';
 import { UserPassword } from '../../domain/UserPassword';
 import { UserRepository } from '../../domain/UserRepository';
 
-export class UserCreate {
+export class UserRegister {
   constructor(private repository: UserRepository) {}
 
   async run(
     name: string,
     email: string,
     plainPassword: string,
-    createdAt: Date,
+    createdAt: Date, // Add createdAt as the fourth argument
   ): Promise<void> {
     const userId = await UserId.generate(this.repository);
     const hashedPassword = await UserPassword.create(plainPassword);
@@ -26,6 +26,6 @@ export class UserCreate {
       hashedPassword.getValue(), // Pass the hashed password
     );
 
-    return this.repository.create(user, hashedPassword.getValue());
+    await this.repository.create(user, hashedPassword.getValue());
   }
 }

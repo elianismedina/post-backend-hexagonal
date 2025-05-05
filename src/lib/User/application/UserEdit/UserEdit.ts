@@ -14,11 +14,17 @@ export class UserEdit {
     email: string,
     createdAt: Date,
   ): Promise<void> {
+    const existingUser = await this.repository.getOneById(new UserId(id));
+    if (!existingUser) {
+      throw new Error('User not found');
+    }
+
     const user = new User(
-      new UserId(id), // Validate the existing ID
+      new UserId(id),
       new UserName(name),
       new UserEmail(email),
       new UserCreatedAt(createdAt),
+      existingUser.password, // Use the existing password
     );
 
     return this.repository.edit(user);

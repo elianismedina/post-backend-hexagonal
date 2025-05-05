@@ -8,9 +8,19 @@ import { UserEdit } from '../../application/UserEdit/UserEdit';
 import { UserDelete } from '../../application/UserDelete/UserDelete';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmUserEntity } from '../TypeOrm/TypeOrmUserEntity';
+import { JwtModule } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
+import { UserRegister } from '../../application/UserRegister/UserRegister';
+import { UserLogin } from '../../application/UserLogin/UserLogin';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([TypeOrmUserEntity])],
+  imports: [
+    TypeOrmModule.forFeature([TypeOrmUserEntity]),
+    JwtModule.register({
+      secret: process.env.JWT_SECRET || 'defaultSecret',
+      signOptions: { expiresIn: '1h' },
+    }),
+  ],
   controllers: [UserController],
   providers: [
     {
@@ -46,6 +56,18 @@ import { TypeOrmUserEntity } from '../TypeOrm/TypeOrmUserEntity';
       useFactory: (repository: TypeOrmUserRepository) =>
         new UserDelete(repository),
       inject: ['UserRepository'],
+    },
+    {
+      provide: 'UserRegister',
+      useFactory: (repository: TypeOrmUserRepository) =>
+        new UserRegister(repository),
+      inject: ['UserRepository'],
+    },
+    {
+      provide: 'UserLogin',
+      useFactory: (repository: TypeOrmUserRepository, jwtService: JwtService) =>
+        new UserLogin(repository, jwtService),
+      inject: ['UserRepository', JwtService],
     },
   ],
 })
