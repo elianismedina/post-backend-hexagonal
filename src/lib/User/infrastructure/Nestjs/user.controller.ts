@@ -9,6 +9,13 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { UserGetAll } from '../../application/UserGetAll/UserGetAll';
 import { UserGetOneById } from '../../application/UserGetOneById/UserGetOneById';
 import { UserCreate } from '../../application/UserCreate/UserCreate';
@@ -16,9 +23,18 @@ import { UserEdit } from '../../application/UserEdit/UserEdit';
 import { UserDelete } from '../../application/UserDelete/UserDelete';
 import { UserRegister } from '../../application/UserRegister/UserRegister';
 import { UserLogin } from '../../application/UserLogin/UserLogin';
-import { Edit, FindOneParams } from './Validations'; // Rename imported Create to CreateDto
+import {
+  FindOneParams,
+  CreateUserDto,
+  EditUserDto,
+  LoginUserDto,
+  UserResponseDto,
+  LoginResponseDto,
+} from './Validations';
 import { UserNotFoundError } from '../../domain/UserNotFoundError';
 
+@ApiTags('Users')
+@ApiBearerAuth()
 @Controller('user')
 export class UserController {
   constructor(
@@ -32,14 +48,28 @@ export class UserController {
   ) {}
 
   @Get()
+  @ApiOperation({ summary: 'Get all users' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of all users',
+    type: [UserResponseDto],
+  })
   async getAll() {
     return (await this.userGetAll.run()).map((u) => u.toPlainObject());
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get user by ID' })
+  @ApiParam({ name: 'id', type: 'string', description: 'User ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'User found',
+    type: UserResponseDto,
+  })
+  @ApiResponse({ status: 404, description: 'User not found' })
   async getOneById(@Param() params: FindOneParams) {
     try {
-      return await this.userGetOneById.run(params.id); // Ensure params.id is valid
+      return await this.userGetOneById.run(params.id);
     } catch (error) {
       if (error instanceof UserNotFoundError) {
         throw new NotFoundException();
@@ -49,9 +79,14 @@ export class UserController {
   }
 
   @Post()
-  async create(
-    @Body() body: { name: string; email: string; password: string },
-  ) {
+  @ApiOperation({ summary: 'Create a new user' })
+  @ApiResponse({
+    status: 201,
+    description: 'User created successfully',
+    type: UserResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'Invalid input data' })
+  async create(@Body() body: CreateUserDto) {
     return await this.userCreate.run(
       body.name,
       body.email,
@@ -61,7 +96,16 @@ export class UserController {
   }
 
   @Put(':id')
-  async edit(@Param() params: FindOneParams, @Body() body: Edit) {
+  @ApiOperation({ summary: 'Update user by ID' })
+  @ApiParam({ name: 'id', type: 'string', description: 'User ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'User updated successfully',
+    type: UserResponseDto,
+  })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiResponse({ status: 400, description: 'Invalid input data' })
+  async edit(@Param() params: FindOneParams, @Body() body: EditUserDto) {
     return await this.userEdit.run(
       params.id,
       body.name,
@@ -71,14 +115,23 @@ export class UserController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete user by ID' })
+  @ApiParam({ name: 'id', type: 'string', description: 'User ID' })
+  @ApiResponse({ status: 200, description: 'User deleted successfully' })
+  @ApiResponse({ status: 404, description: 'User not found' })
   async delete(@Param() params: FindOneParams) {
     return await this.userDelete.run(params.id);
   }
 
   @Post('register')
-  async register(
-    @Body() body: { name: string; email: string; password: string },
-  ) {
+  @ApiOperation({ summary: 'Register a new user' })
+  @ApiResponse({
+    status: 201,
+    description: 'User registered successfully',
+    type: UserResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'Invalid input data' })
+  async register(@Body() body: CreateUserDto) {
     return await this.userRegister.run(
       body.name,
       body.email,
@@ -88,7 +141,14 @@ export class UserController {
   }
 
   @Post('login')
-  async login(@Body() body: { email: string; password: string }) {
+  @ApiOperation({ summary: 'User login' })
+  @ApiResponse({
+    status: 200,
+    description: 'Login successful',
+    type: LoginResponseDto,
+  })
+  @ApiResponse({ status: 401, description: 'Invalid credentials' })
+  async login(@Body() body: LoginUserDto) {
     return await this.userLogin.run(body.email, body.password);
   }
 }
