@@ -14,6 +14,7 @@ export class UserCreate {
     email: string,
     plainPassword: string,
     createdAt: Date,
+    role: string, // Add role parameter
   ): Promise<void> {
     const userId = await UserId.generate(this.repository);
     const hashedPassword = await UserPassword.create(plainPassword);
@@ -23,7 +24,8 @@ export class UserCreate {
       new UserName(name),
       new UserEmail(email),
       new UserCreatedAt(createdAt),
-      hashedPassword.getValue(), // Pass the hashed password
+      hashedPassword.getValue(),
+      role, // Pass role to the User constructor
     );
 
     return this.repository.create(user, hashedPassword.getValue());

@@ -25,7 +25,8 @@ export class TypeOrmUserRepository implements UserRepository {
           new UserName(u.name),
           new UserEmail(u.email),
           new UserCreatedAt(u.createdAt),
-          u.password, // Include the password
+          u.password,
+          u.role,
         ),
     );
   }
@@ -42,6 +43,7 @@ export class TypeOrmUserRepository implements UserRepository {
       new UserEmail(entity.email),
       new UserCreatedAt(entity.createdAt),
       entity.password, // Include the password
+      entity.role, // Include the role
     );
   }
 
@@ -56,7 +58,8 @@ export class TypeOrmUserRepository implements UserRepository {
       new UserName(entity.name),
       new UserEmail(entity.email),
       new UserCreatedAt(entity.createdAt),
-      entity.password, // Include the password
+      entity.password,
+      entity.role,
     );
   }
 
@@ -65,7 +68,8 @@ export class TypeOrmUserRepository implements UserRepository {
       id: user.id.getValue(),
       name: user.name.getValue(),
       email: user.email.getValue(),
-      password: hashedPassword, // Save the hashed password
+      password: hashedPassword,
+      role: user.role, // Save role
       createdAt: user.createdAt.getValue(),
     });
   }

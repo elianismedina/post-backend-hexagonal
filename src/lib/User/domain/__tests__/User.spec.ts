@@ -10,6 +10,7 @@ describe('User', () => {
   const validEmail = 'john.doe@example.com';
   const validPassword = 'password123';
   const validCreatedAt = new Date();
+  const validRole = 'admin'; // Add a valid role
 
   it('should create a valid user', () => {
     const user = new User(
@@ -18,6 +19,7 @@ describe('User', () => {
       new UserEmail(validEmail),
       new UserCreatedAt(validCreatedAt),
       validPassword,
+      validRole, // Pass the role
     );
 
     expect(user.id.getValue()).toBe(validId);
@@ -25,6 +27,7 @@ describe('User', () => {
     expect(user.email.getValue()).toBe(validEmail);
     expect(user.password).toBe(validPassword);
     expect(user.createdAt.getValue()).toBe(validCreatedAt);
+    expect(user.role).toBe(validRole); // Check the role
   });
 
   it('should convert user to plain object', () => {
@@ -34,6 +37,7 @@ describe('User', () => {
       new UserEmail(validEmail),
       new UserCreatedAt(validCreatedAt),
       validPassword,
+      validRole, // Pass the role
     );
 
     const plainObject = user.toPlainObject();
@@ -43,6 +47,7 @@ describe('User', () => {
       name: validName,
       email: validEmail,
       createdAt: validCreatedAt,
+      role: validRole, // Include the role in the plain object
     });
   });
 
@@ -53,6 +58,7 @@ describe('User', () => {
       new UserEmail(validEmail),
       new UserCreatedAt(validCreatedAt),
       validPassword,
+      validRole, // Pass the role
     );
 
     expect(user.nameAndEmail()).toBe(`${validName} - ${validEmail}`);
@@ -67,6 +73,7 @@ describe('User', () => {
           new UserEmail(validEmail),
           new UserCreatedAt(validCreatedAt),
           validPassword,
+          validRole, // Pass the role
         ),
     ).toThrow();
 
@@ -78,6 +85,7 @@ describe('User', () => {
           new UserEmail(validEmail),
           new UserCreatedAt(validCreatedAt),
           validPassword,
+          validRole, // Pass the role
         ),
     ).toThrow();
 
@@ -89,6 +97,7 @@ describe('User', () => {
           null as any,
           new UserCreatedAt(validCreatedAt),
           validPassword,
+          validRole, // Pass the role
         ),
     ).toThrow();
 
@@ -100,6 +109,7 @@ describe('User', () => {
           new UserEmail(validEmail),
           null as any,
           validPassword,
+          validRole, // Pass the role
         ),
     ).toThrow();
   });

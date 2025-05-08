@@ -8,12 +8,7 @@ import { UserRepository } from '../../domain/UserRepository';
 export class UserEdit {
   constructor(private repository: UserRepository) {}
 
-  async run(
-    id: string,
-    name: string,
-    email: string,
-    createdAt: Date,
-  ): Promise<void> {
+  async run(id: string, name: string, email: string): Promise<void> {
     const existingUser = await this.repository.getOneById(new UserId(id));
     if (!existingUser) {
       throw new Error('User not found');
@@ -23,8 +18,9 @@ export class UserEdit {
       new UserId(id),
       new UserName(name),
       new UserEmail(email),
-      new UserCreatedAt(createdAt),
+      new UserCreatedAt(new Date()), // Use the current date
       existingUser.password, // Use the existing password
+      existingUser.role, // Use the existing role
     );
 
     return this.repository.edit(user);

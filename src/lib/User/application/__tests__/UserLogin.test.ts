@@ -4,7 +4,6 @@ import { UserId } from '../../domain/UserId';
 import { UserName } from '../../domain/UserName';
 import { UserEmail } from '../../domain/UserEmail';
 import { UserCreatedAt } from '../../domain/UserCreatedAt';
-import { JwtService } from '@nestjs/jwt';
 
 describe('UserLogin', () => {
   const mockRepository = {
@@ -29,7 +28,8 @@ describe('UserLogin', () => {
       new UserName('John Doe'),
       new UserEmail(email),
       new UserCreatedAt(new Date()),
-      password,
+      'hashedPassword123',
+      'cashier', // Add role
     );
 
     const mockToken = 'mock.jwt.token';
@@ -73,6 +73,7 @@ describe('UserLogin', () => {
       new UserEmail(email),
       new UserCreatedAt(new Date()),
       'correctpassword',
+      'cashier', // Add role
     );
 
     mockRepository.getOneByEmail.mockResolvedValue(mockUser);

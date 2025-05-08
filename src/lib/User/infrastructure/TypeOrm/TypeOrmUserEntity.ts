@@ -14,6 +14,9 @@ export class TypeOrmUserEntity {
   @Column()
   password: string;
 
+  @Column()
+  role: string;
+
   @CreateDateColumn()
   createdAt: Date;
 }

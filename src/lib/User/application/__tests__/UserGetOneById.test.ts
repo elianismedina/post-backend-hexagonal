@@ -25,6 +25,7 @@ describe('UserGetOneById', () => {
       new UserEmail('john.doe@example.com'),
       new UserCreatedAt(new Date()),
       'password123',
+      'manager', // Add role
     );
 
     mockRepository.getOneById.mockResolvedValue(mockUser);

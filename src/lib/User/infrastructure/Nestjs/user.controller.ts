@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -32,10 +33,13 @@ import {
   LoginResponseDto,
 } from './Validations';
 import { UserNotFoundError } from '../../domain/UserNotFoundError';
+import { Roles } from './../../application/Roles/Roles';
+import { RolesGuard } from './../../application/RolesGuard/RolesGuard';
 
 @ApiTags('Users')
 @ApiBearerAuth()
 @Controller('user')
+@UseGuards(RolesGuard)
 export class UserController {
   constructor(
     @Inject('UserGetAll') private readonly userGetAll: UserGetAll,
@@ -54,6 +58,7 @@ export class UserController {
     description: 'List of all users',
     type: [UserResponseDto],
   })
+  @Roles('admin', 'superadmin') // Restrict access to admins
   async getAll() {
     return (await this.userGetAll.run()).map((u) => u.toPlainObject());
   }
@@ -92,6 +97,7 @@ export class UserController {
       body.email,
       body.password,
       new Date(),
+      body.role, // Pass the role to UserCreate.run
     );
   }
 
@@ -109,8 +115,7 @@ export class UserController {
     return await this.userEdit.run(
       params.id,
       body.name,
-      body.email,
-      new Date(),
+      body.email, // Removed the unnecessary 'new Date()' argument
     );
   }
 
@@ -137,6 +142,7 @@ export class UserController {
       body.email,
       body.password,
       new Date(),
+      body.role, // Pass the role to UserRegister.run
     );
   }
 

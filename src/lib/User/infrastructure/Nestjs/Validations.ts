@@ -37,6 +37,10 @@ export class CreateUserDto {
   })
   @IsString()
   password: string;
+
+  @ApiProperty({ description: 'User role', example: 'admin' }) // Add role field
+  @IsString()
+  role: string;
 }
 
 export class EditUserDto {

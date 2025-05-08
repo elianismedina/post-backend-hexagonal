@@ -28,13 +28,20 @@ describe('UserCreate', () => {
       new UserName(name),
       new UserEmail(email),
       new UserCreatedAt(createdAt),
-      password,
+      'hashedPassword123',
+      'admin', // Add role
     );
 
     mockRepository.getOneByEmail.mockResolvedValue(null);
     mockRepository.save.mockResolvedValue(mockUser);
 
-    const result = await userCreate.run(name, email, password, createdAt);
+    const result = await userCreate.run(
+      name,
+      email,
+      password,
+      createdAt,
+      'admin',
+    );
 
     expect(result).toBe(mockUser);
     expect(mockRepository.getOneByEmail).toHaveBeenCalledWith(
@@ -55,12 +62,13 @@ describe('UserCreate', () => {
       new UserEmail(email),
       new UserCreatedAt(createdAt),
       password,
+      'admin', // Add role
     );
 
     mockRepository.getOneByEmail.mockResolvedValue(existingUser);
 
     await expect(
-      userCreate.run(name, email, password, createdAt),
+      userCreate.run(name, email, password, createdAt, 'admin'), // Add role
     ).rejects.toThrow('User with this email already exists');
 
     expect(mockRepository.getOneByEmail).toHaveBeenCalledWith(
@@ -71,14 +79,35 @@ describe('UserCreate', () => {
 
   it('should throw error for invalid input data', async () => {
     const invalidInputs = [
-      { name: '', email: 'valid@email.com', password: 'password123' },
-      { name: 'John Doe', email: 'invalid-email', password: 'password123' },
-      { name: 'John Doe', email: 'valid@email.com', password: '' },
+      {
+        name: '',
+        email: 'valid@email.com',
+        password: 'password123',
+        role: 'admin',
+      },
+      {
+        name: 'John Doe',
+        email: 'invalid-email',
+        password: 'password123',
+        role: 'admin',
+      },
+      {
+        name: 'John Doe',
+        email: 'valid@email.com',
+        password: '',
+        role: 'admin',
+      },
     ];
 
     for (const input of invalidInputs) {
       await expect(
-        userCreate.run(input.name, input.email, input.password, new Date()),
+        userCreate.run(
+          input.name,
+          input.email,
+          input.password,
+          new Date(),
+          input.role,
+        ), // Add role
       ).rejects.toThrow();
     }
 
