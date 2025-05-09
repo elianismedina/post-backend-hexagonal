@@ -1,32 +1,14 @@
+import { ConfigService } from '@nestjs/config';
+import { setupApp } from './setup-app';
 import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { AppModule } from './app.module';
-import 'reflect-metadata';
-import { ValidationPipe } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { AppModule } from './app/app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
-
-  // Enable CORS
-  app.enableCors({
-    origin: 'http://localhost:3001', // Frontend URL
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-  });
-
-  // Swagger configuration
-  const config = new DocumentBuilder()
-    .setTitle('API Documentation')
-    .setDescription('API documentation for the application')
-    .setVersion('1.0')
-    .addBearerAuth() // Add JWT authentication if applicable
-    .build();
-
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document); // Swagger UI will be available at /api
-
-  await app.listen(process.env.PORT ?? 3000);
+  const app: NestExpressApplication =
+    await NestFactory.create<NestExpressApplication>(AppModule);
+  const configService = app.get(ConfigService);
+  setupApp(app);
+  await app.listen(configService.getOrThrow<number>('PORT'));
 }
 bootstrap();

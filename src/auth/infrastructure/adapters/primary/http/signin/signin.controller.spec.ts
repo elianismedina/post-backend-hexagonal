@@ -1,0 +1,38 @@
+import { Test, TestingModule } from '@nestjs/testing';
+import { SignInController } from './signin.controller';
+import { SignInService } from '../../../../../application/signin/signin.service';
+
+describe('SignInController', () => {
+  let controller: SignInController;
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [SignInController],
+      providers: [
+        {
+          provide: SignInService,
+          useValue: {
+            signin: () => ({
+              token: 'token',
+              refreshToken: 'refreshToken',
+            }),
+          },
+        },
+      ],
+    }).compile();
+
+    controller = module.get<SignInController>(SignInController);
+  });
+
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
+
+  it('should singin user', async () => {
+    const response = await controller.signin({
+      email: 'test@gmail.com',
+      password: 'test',
+    });
+    expect(response).toEqual({ token: 'token', refreshToken: 'refreshToken' });
+  });
+});
