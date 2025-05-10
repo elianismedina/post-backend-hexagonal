@@ -27,6 +27,7 @@ import { RefreshTokenService } from './application/resfresh-token/refresh-token.
     // Config JWT Auth
     PassportModule,
     JwtModule.registerAsync({
+      // eslint-disable-next-line @typescript-eslint/require-await
       useFactory: async (configService: ConfigService) => {
         return {
           // secret: configService.jwtKey,
